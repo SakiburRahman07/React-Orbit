@@ -1,0 +1,9 @@
+input {
+  width: 100%;
+  align-items: center;
+}
+
+.todo-container {
+  padding: 5px;
+  align-items: center;
+}
