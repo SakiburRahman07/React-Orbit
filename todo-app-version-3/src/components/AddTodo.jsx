@@ -1,47 +1,55 @@
-import { useState } from "react";
+import { useRef, useContext } from "react";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import {TodoItemsContext} from '../store/todo-items-store'; // Assuming this context is available
 
-function AddTodo({ onNewItem }) {
-  const [todoName, setTodoName] = useState();
-  const [dueDate, setDueDate] = useState();
+function AddTodo() {
+  const { addNewItem } = useContext(TodoItemsContext); // Add the correct context
+  const nameElement = useRef(null);
+  const dueDateElement = useRef(null);
 
-  const handleNameChange = (event) => {
-    setTodoName(event.target.value);
-  };
+  const handleAddButtonClicked = (event) => {
+    event.preventDefault();  // Prevent the form from refreshing the page
+    if (nameElement.current.value && dueDateElement.current.value) {
+      const todoName = nameElement.current.value;
+      const dueDate = dueDateElement.current.value;
+      addNewItem(todoName, dueDate);
 
-  const handleDateChange = (event) => {
-    setDueDate(event.target.value);
-  };
+      // Clear the input fields after submission
+      nameElement.current.value = "";
+      dueDateElement.current.value = "";
 
-  const handleAddButtonClicked = () => {
-    onNewItem(todoName, dueDate);
-    setDueDate("");
-    setTodoName("");
+      // Set focus back to the name input for accessibility
+      nameElement.current.focus();
+    }
   };
 
   return (
     <div className="container text-center">
-      <div className="row kg-row">
+      <form className="row kg-row" onSubmit={handleAddButtonClicked}>
         <div className="col-6">
           <input
             type="text"
             placeholder="Enter Todo Here"
-            value={todoName}
-            onChange={handleNameChange}
+            ref={nameElement}
+            className="form-control" // Add Bootstrap class for styling
           />
         </div>
         <div className="col-4">
-          <input type="date" value={dueDate} onChange={handleDateChange} />
+          <input 
+            type="date" 
+            ref={dueDateElement} 
+            className="form-control" // Add Bootstrap class for styling
+          />
         </div>
         <div className="col-2">
           <button
-            type="button"
+            type="submit"  // Change to 'submit' to allow form submission
             className="btn btn-success kg-button"
-            onClick={handleAddButtonClicked}
           >
-            Add
+            <IoIosAddCircleOutline />
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
